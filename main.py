@@ -125,13 +125,13 @@ def gradient_descent(learningRate,points_x, points_y,start_slope,start_y_int,num
     return [slope, y_int]
 
 learned = gradient_descent(0.0001, x, y, 0, 0, 100)
-print(learned)
+# print(learned)
 
 #Drawing visualisation of the correlation and the regression.
-# plt.scatter(x,y)
+plt.scatter(x,y)
 # # plt.plot(x,y,c="red")
-# plt.plot(x,regression,c="green")
-# plt.xlabel('year')
-# plt.ylabel('people')
-# plt.title('Suicide rate of ' + country)
-# plt.show()
+plt.plot(x,regression,c="green")
+plt.xlabel('year')
+plt.ylabel('people')
+plt.title('Suicide rate of ' + country)
+plt.show()
