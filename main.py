@@ -28,17 +28,18 @@ read = csv.reader(csvFile)
 
 #Fetching the data of the country from the master.csv
 if list_request.casefold().replace(" ","") == "y":
-    header = True
-    for row in read:
-        if header:
-            header = False
+    head = True
+    for row in csv.reader(csvFile):
+        if head:
+            head = False
         else:
             if row[0] not in countries:
                 countries.append(row[0])
                 print(row[0])
 
-country_request = input("What country do you want to analyse? \n")
+csvFile.close()
 
+country_request = input("What country do you want to analyse? \n")
 
 if country_request.count(" ") is not 0:
     print("The requested country : \'" + country_request + "\' contains a whitespace.")
@@ -52,10 +53,10 @@ country = country_request.replace("_"," ").casefold().title()
 header = True
 yearsIndex = 1
 suicidesIndex = 4
-
+csvFile = open("master.csv", "r")
 
 #Fetching the data of the country from the master.csv
-for row in read:
+for row in csv.reader(csvFile):
     if header:
         header = False
     else:
@@ -65,6 +66,7 @@ for row in read:
                 suicides.append(int(row[suicidesIndex]))
             else:
                 suicides[years.index(int(row[yearsIndex]))] = int(suicides[years.index(int(row[yearsIndex]))]) + int(row[suicidesIndex])
+
 #If there are no records of the requested country.
 if len(years) is 0:
     print("We couldn\'t find anything of the country " + country)
@@ -74,23 +76,20 @@ csvFile.close()
 
 
 #Returns the y values of the linear regression
-def linear_regression(targetX,targetY):
-    n = len(targetX)
-    sumX = sum(targetX)/n
-    sumY = sum(targetY)/n
+
+def linear_regression(X,Y):
+    n = len(X)
+    sumX = sum(X)/n
+    sumY = sum(Y)/n
     numerator = denominator = 0
 
     #This is where the linear function is being calculated
     for i in range(n):
-        numerator += (targetX[i] - sumX) * (targetY[i] - sumY)
-        denominator += (targetX[i] - sumX) ** 2
+        numerator += (X[i] - sumX) * (Y[i] - sumY)
+        denominator += (X[i] - sumX) ** 2
 
     slope = numerator/denominator
     yIntercept = sumY-(sumX*slope)
-
-    regression = np.zeros(n)
-    for i in range(n):
-        regression[i] = (slope*targetX[i]) + yIntercept
 
     return lambda x: (slope*x)+yIntercept
 
@@ -103,6 +102,7 @@ linearFuncion = linear_regression(x, y)
 
 regression = linear_regression(x, y)(x)
 
+#Niet belangrijk voor nu
 def step(slope,y_int,points_x,points_y,learningRate):
     y_int_gradient = 0
     slope_gradient = 0
@@ -115,7 +115,6 @@ def step(slope,y_int,points_x,points_y,learningRate):
     new_y_int = y_int - (learningRate * y_int_gradient)
     new_slope = slope - (learningRate * slope_gradient)
     return [new_slope,new_y_int]
-
 def gradient_descent(learningRate,points_x, points_y,start_slope,start_y_int,num_iter):
     lr = learningRate
     slope = start_slope
@@ -129,7 +128,6 @@ learned = gradient_descent(0.0001, x, y, 0, 0, 100)
 
 #Drawing visualisation of the correlation and the regression.
 plt.scatter(x,y)
-# # plt.plot(x,y,c="red")
 plt.plot(x,regression,c="green")
 plt.xlabel('year')
 plt.ylabel('people')
